@@ -38,3 +38,21 @@ model4_result <- summary(
 )
 
 model4_result
+
+
+cox_model4 <- coxph(
+  Surv(days, outcome_3y_logmar2) ~ 
+    age +
+    sex +
+    HbA1c +
+    eGFR +
+    DR_grading +
+    DME +
+    CAT +
+    GLAU +
+    SII100 +
+    cluster(ID),
+  data = complete(data)
+)
+
+cox.zph(cox_model4)
