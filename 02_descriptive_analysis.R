@@ -1,25 +1,78 @@
+# ==============================================================================
+# 02_descriptive_analysis.R
+# Missing-data assessment and baseline characteristics
+# ==============================================================================
 
-# ============================================================
-# 02 Descriptive analysis
-# ============================================================
-# Generate baseline characteristics and missing data summary.
-# ============================================================
+if (!exists("analysis_data")) {
+  source("01_data_preparation.R")
+}
 
+required_packages <- c("dplyr", "tidyr", "tableone")
+invisible(lapply(required_packages, function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    stop(sprintf("Package '%s' is required but not installed.", pkg), call. = FALSE)
+  }
+}))
+
+library(dplyr)
+library(tidyr)
 library(tableone)
-library(mice)
 
-# Missing data pattern
-md.pattern(data)
+# ------------------------------------------------------------------------------
+# Missing-data assessment
+# ------------------------------------------------------------------------------
 
-# Example Table 1
-vars <- c(
-  "age","sex","HbA1c","eGFR",
-  "DR_grading","DME","CAT","GLAU","SII100"
+missing_table <- analysis_data %>%
+  summarise(
+    across(
+      everything(),
+      ~ mean(is.na(.x)) * 100
+    )
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "missing_percent"
+  ) %>%
+  arrange(desc(missing_percent))
+
+print(missing_table)
+
+# ------------------------------------------------------------------------------
+# Baseline characteristics (Table 1)
+# ------------------------------------------------------------------------------
+
+baseline_vars <- c(
+  "age",
+  "sex",
+  "HbA1c",
+  "DM_duration",
+  "eGFR",
+  "SII100",
+  "AAR",
+  "Hb",
+  "RDW_CV",
+  "GGT",
+  "comorbidity_score",
+  "HTN",
+  "DR_grading",
+  "DME",
+  "IOP",
+  "CAT",
+  "GLAU",
+  "ERM"
 )
 
-CreateTableOne(
-  vars = vars,
+baseline_vars <- intersect(baseline_vars, names(analysis_data))
+
+table1 <- CreateTableOne(
+  vars = baseline_vars,
   strata = "outcome_3y_logmar2",
-  data = data,
-  factorVars = c("sex","DR_grading","DME","CAT","GLAU")
+  data = analysis_data,
+  test = TRUE
+)
+
+print(
+  table1,
+  showAllLevels = TRUE
 )
