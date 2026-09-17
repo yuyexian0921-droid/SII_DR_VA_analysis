@@ -165,6 +165,56 @@ print(comparison_12)
 print(comparison_23)
 print(comparison_34)
 
+############################################################
+# Harrell's C-index for Model 3 and Model 4
+# Pooled across multiple imputations
+############################################################
+
+library(survival)
+
+pool_cindex <- function(mira_model) {
+  
+  fits <- mira_model$analyses
+  
+  # Extract C-index and its variance from each imputed dataset
+  c_est <- sapply(fits, function(fit) {
+    concordance(fit)$concordance
+  })
+  
+  c_var <- sapply(fits, function(fit) {
+    concordance(fit)$var
+  })
+  
+  m <- length(c_est)
+  
+  # Rubin's rules
+  Qbar <- mean(c_est)
+  Ubar <- mean(c_var)
+  B <- var(c_est)
+  Tvar <- Ubar + (1 + 1/m) * B
+  
+  SE <- sqrt(Tvar)
+  
+  lower <- Qbar - 1.96 * SE
+  upper <- Qbar + 1.96 * SE
+  
+  data.frame(
+    C_index = Qbar,
+    SE = SE,
+    Lower_95CI = lower,
+    Upper_95CI = upper
+  )
+}
+
+
+# Model 3
+cindex_model3 <- pool_cindex(model3)
+
+# Model 4
+cindex_model4 <- pool_cindex(model4)
+
+cindex_model3
+cindex_model4
 # ------------------------------------------------------------------------------
 # Proportional-hazards assumption
 # ------------------------------------------------------------------------------
