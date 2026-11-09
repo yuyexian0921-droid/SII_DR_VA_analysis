@@ -1,0 +1,19 @@
+﻿Subgroup,Level,Eyes (n),Events (n),Counting basis
+DR severity,NPDR,778,279,Full cohort
+DR severity,PDR,947,469,Full cohort
+DME,No,1018,357,Full cohort
+DME,Yes,707,391,Full cohort
+Cataract,No,341,111,Full cohort
+Cataract,Yes,1384,637,Full cohort
+Glaucoma,No,1349,540,Full cohort
+Glaucoma,Yes,376,208,Full cohort
+Sex,Female,827,342,Full cohort
+Sex,Male,898,406,Full cohort
+Age,<60 years,1066,470,Full cohort
+Age,≥60 years,659,278,Full cohort
+HbA1c,<7%,351,141,Observed (pre-imputation)
+HbA1c,≥7%,860,394,Observed (pre-imputation)
+eGFR,<60,221,115,Observed (pre-imputation)
+eGFR,≥60,981,431,Observed (pre-imputation)
+HbA1c,Missing,514,213,Missing before imputation; not a modeled subgroup
+eGFR,Missing,523,202,Missing before imputation; not a modeled subgroup
